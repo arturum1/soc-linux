@@ -11,8 +11,11 @@ BOARD ?= iob_cyclonev_gt_dk
 
 BUILD_DIR ?= $(shell nix-shell --run "py2hwsw $(CORE) print_build_dir")
 
-USE_INTMEM ?= 1
-USE_EXTMEM ?= 0
+# Soc-linux uses memory with 26 address bits and 4 bytes per word, for a total of 256 MiB.
+# We typically have to use the external FPGA board's DDR memory in order to fit the entire memory.
+USE_INTMEM ?= 0
+USE_EXTMEM ?= 1
+
 INIT_MEM ?= 1
 
 VERSION ?=$(shell cat $(CORE).py | grep version | cut -d '"' -f 4)
@@ -40,13 +43,11 @@ sim-test:
 	nix-shell --run "make clean setup USE_INTMEM=0 USE_EXTMEM=1 INIT_MEM=0 && make -C ../$(CORE)_V$(VERSION)/ sim-run SIMULATOR=verilator"
 
 fpga-run:
-	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/ fpga-sw-build BOARD=$(BOARD)"
+	nix-shell --run "make clean setup INIT_MEM=0 && make -C ../$(CORE)_V$(VERSION)/ fpga-sw-build BOARD=$(BOARD)"
 	make -C ../$(CORE)_V$(VERSION)/ fpga-run BOARD=$(BOARD)
 
 fpga-test:
-	make clean setup fpga-run BOARD=iob_cyclonev_gt_dk USE_INTMEM=1 USE_EXTMEM=0 INIT_MEM=1 
 	make clean setup fpga-run BOARD=iob_cyclonev_gt_dk USE_INTMEM=0 USE_EXTMEM=1 INIT_MEM=0 
-	make clean setup fpga-run BOARD=iob_aes_ku040_db_g USE_INTMEM=1 USE_EXTMEM=0 INIT_MEM=1 
 	make clean setup fpga-run BOARD=iob_aes_ku040_db_g USE_INTMEM=0 USE_EXTMEM=1 INIT_MEM=0 
 
 syn-build: clean

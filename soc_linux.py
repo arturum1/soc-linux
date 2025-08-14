@@ -15,6 +15,7 @@ def setup(py_params_dict):
             # Full list of parameters availabe here: https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/lib/iob_system_linux/iob_system_linux.py
             # "cpu": "iob_vexriscv",
             # # NOTE: Place other iob_system_linux python parameters here
+            #
             # "system_attributes": {
             #     # Every attribute in this dictionary will override/append to the ones of the iob_system_linux parent core.
             #     "board_list": [
