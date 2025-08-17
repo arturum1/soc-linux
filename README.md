@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: 2025 IObundle
 SPDX-License-Identifier: MIT
 -->
 
-# SoC-Linux
+# SoCLinux Project
 
 [SoCLinux](https://nlnet.nl/project/SoCLinux/) is an open-source project that aims to configure and generate a Linux system for RISC-V processors, focusing on creating a robust and maintainable environment for designing and testing IP cores.
 The project builds upon the existing open-source Py2HWSW framework powering the IOb-SoC platform, enhancing the functionality and portability of IP cores, by using as examples the key IOb-Cache, IOb-Eth, and IOb-UART16550 open-source cores.
@@ -12,17 +12,44 @@ By providing a Linux IP core testbed, SoCLinux enables developers to build and t
 The project aims to establish a widely adopted and maintainable ecosystem for IP core development, benefiting the broader community of IP core providers and users.
 SoCLinux will leverage the IP-XACT standard (IEEE 1685) for IP core packaging, and seamlessly exchange IP cores with FuseSoC, a well-known open-source IP core package manager.
 
-SoC-Linux is based on the IOb-SoC System-on-Chip (SoC) template.
-This system was initially developed during for the [OpenCryptoLinux](https://nlnet.nl/project/OpenCryptoLinux/) project.
+## SoCLinux template
 
+The SoCLinux template available in this repository is a derivative system of the [IOb-System-Linux](https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/lib/iob_system/iob_system_linux) SoC located in the [Py2HWSW](https://github.com/IObundle/py2hwsw) framework's core library.
+
+This repository serves as a template for creating Linux-compatible SoC designs, using the Py2HWSW framework.
+For purely baremetal SoC designs, the [IOb-SoC](https://github.com/IObundle/iob-soc) template is recommended.
+
+This template follows the same principles as the IOb-SoC template. It is recommended to read the [IOb-SoC documentation](https://github.com/IObundle/iob-soc/blob/main/README.md) to understand the design and usage of the template.
+
+## Quick start
+
+```Bash
+# Clone the SoC-Linux repository:
+git clone --recursive git@github.com:IObundle/soc-linux.git
+cd soc-linux
+
+# Start a Nix environment with dependencies installed (including latest Py2HWSW):
+nix-shell
+
+# Generate and run the `soc_linux` system in simulation with baremetal firmware:
+make sim-run SIMULATOR=verilator
+
+# Generate and run the `soc_linux` system in the AES-KU040-DB-G FPGA board with baremetal firmware:
+# NOTE: FPGA design tools must be installed and FPGA board must be attached locally.
+# Refer to: https://github.com/IObundle/iob-soc?tab=readme-ov-file#run-on-fpga-board
+make fpga-build fpga-run BOARD=iob_aes_ku040_db_g
+
+# Run the Linux OS on the FPGA board
+make fpga-run BOARD=iob_aes_ku040_db_g RUN_LINUX=1
+```
+
+<!--
 ## Differences to IOb-SoC
-This section outlines the distinctions between IOb-SoC and SoC-Linux.
+This section outlines the distinctions between IOb-SoC and SoCLinux.
 
-Compared to IOb-SoC, SoC-Linux features a distinct CPU and employs AXI in the internal signals, deviating from the IOb-bus used by IOb-SoC. Another significant difference is the placement of firmware, as the one in SoC-Linux always resides in external memory.
+The bootloader in SoCLinux differs from that in IOb-SoC. In SoCLinux, the bootloader is directly loaded into internal RAM, whereas in IOb-SoC, the bootloader binary starts in ROM and is then copied to RAM.
 
-Additionally, the bootloader in SoC-Linux differs from that in IOb-SoC. In SoC-Linux, the bootloader is directly loaded into internal RAM, whereas in IOb-SoC, the bootloader binary starts in ROM and is then copied to RAM.
-
-The boot control unit in SoC-Linux, unlike IOb-SoC, is a distinct module and exclusively manages the boot process state. On the software side, the SoC-Linux bootloader initially loads a file named soc_linux_mem.config, which specifies the files and their respective memory addresses to be copied into external memory.
+The boot control unit in SoCLinux, unlike IOb-SoC, is a distinct module and exclusively manages the boot process state. On the software side, the SoCLinux bootloader initially loads a file named soc_linux_mem.config, which specifies the files and their respective memory addresses to be copied into external memory.
 
 <!--
 TODO: automate this in Makefile
@@ -91,14 +118,3 @@ This project is funded through [NGI Zero Core](https://nlnet.nl/core), a fund es
 
 [<img src="https://nlnet.nl/logo/banner.png" alt="NLnet foundation logo" width="20%" />](https://nlnet.nl)
 [<img src="https://nlnet.nl/image/logos/NGI0_tag.svg" alt="NGI Zero Logo" width="20%" />](https://nlnet.nl/core)
-
-
-
-The [OpenCryptoLinux](https://nlnet.nl/project/OpenCryptoLinux/) project was funded through the NGI Assure Fund, a fund established by NLnet with financial support from the European Commission's Next Generation Internet programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement No 957073.
-
-<table>
-    <tr>
-        <td align="center" width="50%"><img src="https://nlnet.nl/logo/banner.svg" alt="NLnet foundation logo" style="width:90%"></td>
-        <td align="center"><img src="https://nlnet.nl/image/logos/NGIAssure_tag.svg" alt="NGI Assure logo" style="width:90%"></td>
-    </tr>
-</table>
