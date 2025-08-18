@@ -30,7 +30,6 @@ jobs:
     timeout-minutes: 30
     # run even if previous job failed
     if: ${{ !cancelled() }}
-    needs: [ pc-emul ]
   
     steps:
       - uses: actions/checkout@v4
