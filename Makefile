@@ -44,6 +44,7 @@ sim-test:
 
 fpga-build:
 	nix-shell --run "make clean setup INIT_MEM=0"
+	nix-shell --run "make -C ../$(CORE)_V$(VERSION)/ fpga-sw-build BOARD=$(BOARD)"
 	make -C ../$(CORE)_V$(VERSION)/ fpga-build BOARD=$(BOARD)
 
 fpga-run:
