@@ -52,6 +52,15 @@ The bootloader in SoCLinux differs from that in IOb-SoC. In SoCLinux, the bootlo
 The boot control unit in SoCLinux, unlike IOb-SoC, is a distinct module and exclusively manages the boot process state. On the software side, the SoCLinux bootloader initially loads a file named soc_linux_mem.config, which specifies the files and their respective memory addresses to be copied into external memory.
 
 -->
+## Ethernet
+
+The SoCLinux template supports ethernet communication by default.
+The bootloader and firmware provided use ethernet to speed up file transfers.
+
+However, to setup the ethernet interfaces on the host machine, root privileges are required.
+As an alternative, ethernet can be disable by passing `USE_ETHERNET=0` to the make command.
+This will cause SocLinux to generate a system without ethernet support, and make all file transfers via serial communication.
+
 ## Ethernet simulation
 
 The ethernet simulation requires dummy interfaces, named `eth-[SIMULATOR]`.

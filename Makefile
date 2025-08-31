@@ -24,8 +24,25 @@ ifneq ($(DEBUG),)
 EXTRA_ARGS +=--debug_level $(DEBUG)
 endif
 
+# System parameters
+ifneq ($(INIT_MEM),)
+PY_PARAMS:=$(PY_PARAMS):init_mem=$(INIT_MEM)
+endif
+ifneq ($(USE_INTMEM),)
+PY_PARAMS:=$(PY_PARAMS):use_intmem=$(USE_INTMEM)
+endif
+ifneq ($(USE_EXTMEM),)
+PY_PARAMS:=$(PY_PARAMS):use_extmem=$(USE_EXTMEM)
+endif
+ifneq ($(USE_ETHERNET),)
+PY_PARAMS:=$(PY_PARAMS):use_ethernet=$(USE_ETHERNET)
+endif
+# Remove first char (:) from PY_PARAMS
+PY_PARAMS:=$(shell echo $(PY_PARAMS) | cut -c2-)
+
+
 setup:
-	nix-shell --run "py2hwsw $(CORE) setup --no_verilog_lint --py_params 'use_intmem=$(USE_INTMEM):use_extmem=$(USE_EXTMEM):init_mem=$(INIT_MEM)' $(EXTRA_ARGS)"
+	nix-shell --run "py2hwsw $(CORE) setup --no_verilog_lint --py_params '$(PY_PARAMS)' $(EXTRA_ARGS)"
 
 pc-emul-run:
 	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/ pc-emul-run"
