@@ -59,7 +59,7 @@ The SoCLinux template supports ethernet communication by default.
 The bootloader and firmware provided use ethernet to speed up file transfers.
 
 However, to setup the ethernet interfaces on the host machine, root privileges are required.
-As an alternative, ethernet can be disable by passing `USE_ETHERNET=0` to the make command.
+As an alternative, ethernet can be disabled by passing `USE_ETHERNET=0` to the make command.
 This will cause SoCLinux to generate a system without ethernet support, and make all file transfers via serial communication.
 
 ## Ethernet simulation
