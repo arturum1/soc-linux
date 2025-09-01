@@ -52,6 +52,7 @@ The bootloader in SoCLinux differs from that in IOb-SoC. In SoCLinux, the bootlo
 The boot control unit in SoCLinux, unlike IOb-SoC, is a distinct module and exclusively manages the boot process state. On the software side, the SoCLinux bootloader initially loads a file named soc_linux_mem.config, which specifies the files and their respective memory addresses to be copied into external memory.
 
 -->
+
 ## Ethernet
 
 The SoCLinux template supports ethernet communication by default.
