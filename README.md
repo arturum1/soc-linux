@@ -51,13 +51,25 @@ The bootloader in SoCLinux differs from that in IOb-SoC. In SoCLinux, the bootlo
 
 The boot control unit in SoCLinux, unlike IOb-SoC, is a distinct module and exclusively manages the boot process state. On the software side, the SoCLinux bootloader initially loads a file named soc_linux_mem.config, which specifies the files and their respective memory addresses to be copied into external memory.
 
-<!--
-TODO: automate this in Makefile
+-->
+
+## Ethernet
+
+The SoCLinux template supports ethernet communication by default.
+The bootloader and firmware provided use ethernet to speed up file transfers.
+
+However, to setup the ethernet interfaces on the host machine, root privileges are required.
+As an alternative, ethernet can be disabled by passing `USE_ETHERNET=0` to the make command.
+This will cause SoCLinux to generate a system without ethernet support, and make all file transfers via serial communication.
+
 ## Ethernet simulation
 
-The ethernet simulation requires setting up dummy interfaces with
-`eth-[SIMULATOR]` that require `sudo`:
-Setup the following interfaces with the commands:
+The ethernet simulation requires dummy interfaces, named `eth-[SIMULATOR]`.
+
+The SoCLinux template automatically creates Makefiles in the build directory to create these interfaces during the build process for simulation.
+These interfaces require root privileges to be created, so the Makefile may request for sudo/root password during the build process for simulation.
+
+Alternatively, to setup these dummy interfaces manually, run the following commands:
 ```bash
 sudo modprobe dummy
 sudo ip link add eth-icarus type dummy
@@ -102,12 +114,32 @@ sudo ip link set [interface] promisc on
 The system's Python scripts need RAW frame access for Ethernet communication.
 To achieve this, the Python interpreter must have the CAP_NET_RAW capability.
 
-The 'ETHERNET' submodule already includes a Python wrapper that provides RAW frame access.
-To build the python wrapper, run:
+The [iob-eth](https://github.com/IObundle/iob-eth/tree/master/scripts/pyRawWrapper) repository includes a wrapper for the Python binary that provides RAW frame access.
+The iob-eth's scripts will copy this wrapper's Makefile and source files to the build directory under the folder `path/to/build/dir/scripts/pyRawWrapper/`.
+
+The SoCLinux template will generate a Makefile in the build directory to automatically create the Python wrapper during the build process for simulation and FPGA.
+
+Alternatively, to build the python wrapper manually, run:
 ```bash
-make -C submodules/ETHERNET/scripts/pyRawWrapper
+make -C ../soc_linux_V*/scripts/pyRawWrapper
 ```
--->
+
+It is also possible to use a custom python wrapper located in a different path by setting the `IOB_CONSOLE_PYTHON_ENV` environment variable:
+```bash
+export IOB_CONSOLE_PYTHON_ENV=/path/to/custom/pyRawWrapper
+```
+
+## Common issues:
+
+```bash
+unable to set iab: Operation not permitted
+```
+
+This error usually appears when the pyRawWrapper does not have the linux 'CAP_NET_RAW' capability set.
+Running the following command with root privileges will set the capability:
+```bash
+setcap cap_net_raw,cap_setpcap=p path/to/pyRawWrapperBinary
+```
 
 # Tutorial: Add New Device Driver
 Checkout [this tutorial](document/device_driver_tutorial.md) for more details on
