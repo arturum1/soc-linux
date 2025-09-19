@@ -38,7 +38,7 @@ jobs:
       - name: Clean untracked files and directories (like old submodules)
         run: git clean -ffdx
       - name: run test
-        run: make sim-run SIMULATOR=verilator
+        run: make sim-test
   
   ku040:
     runs-on: self-hosted
