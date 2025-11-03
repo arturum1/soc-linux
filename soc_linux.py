@@ -12,7 +12,7 @@ def setup(py_params: dict):
             # SoC-Linux will inherit all attributes/files from the iob_system_linux core.
             "core_name": "iob_system_linux",
             # Every parameter in the lines below will be passed to the iob_system_linux parent core.
-            # Full list of parameters availabe here: https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/lib/iob_system/iob_system_linux/iob_system_linux.py
+            # Full list of parameters available here: https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/lib/iob_system/iob_system_linux/iob_system_linux.py
             #
             # Select CPU to use. For a list of compatible CPUs and info about custom CPU integration
             # check the 'cpu' python parameter at: https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/lib/iob_system/iob_system.py
