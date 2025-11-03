@@ -57,8 +57,8 @@ sim-run:
 	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/ sim-run SIMULATOR=$(SIMULATOR)"
 
 sim-test:
-	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/ sim-run SIMULATOR=verilator CPU=iob_vexriscv"
-	nix-shell --run "make clean setup && make -C ../$(CORE)_V$(VERSION)/ sim-run SIMULATOR=verilator CPU=iob_naxriscv"
+	nix-shell --run "make clean setup CPU=iob_vexriscv && make -C ../$(CORE)_V$(VERSION)/ sim-run SIMULATOR=verilator CPU=iob_vexriscv"
+	nix-shell --run "make clean setup CPU=iob_naxriscv && make -C ../$(CORE)_V$(VERSION)/ sim-run SIMULATOR=verilator CPU=iob_naxriscv"
 # 	nix-shell --run "make clean setup USE_INTMEM=1 USE_EXTMEM=0 INIT_MEM=1 && make -C ../$(CORE)_V$(VERSION)/ sim-run SIMULATOR=icarus"
 # 	nix-shell --run "make clean setup USE_INTMEM=1 USE_EXTMEM=0 INIT_MEM=0 && make -C ../$(CORE)_V$(VERSION)/ sim-run SIMULATOR=verilator"
 # 	nix-shell --run "make clean setup USE_INTMEM=1 USE_EXTMEM=1 INIT_MEM=0 && make -C ../$(CORE)_V$(VERSION)/ sim-run SIMULATOR=verilator"
