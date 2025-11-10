@@ -3,57 +3,51 @@
 # SPDX-License-Identifier: MIT
 
 
-def setup(py_params_dict):
+def setup(py_params: dict):
     # Py2hwsw dictionary describing current core
-    core_dict = {
+    attributes_dict = {
         "version": "0.8",
         "parent": {
             # SoC-Linux is a child core of iob_system_linux: https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/lib/hardware/iob_system_linux
             # SoC-Linux will inherit all attributes/files from the iob_system_linux core.
             "core_name": "iob_system_linux",
             # Every parameter in the lines below will be passed to the iob_system_linux parent core.
-            # Full list of parameters availabe here: https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/lib/iob_system_linux/iob_system_linux.py
-            # "cpu": "iob_vexriscv",
-            # # NOTE: Place other iob_system_linux python parameters here
+            # Full list of parameters available here: https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/lib/iob_system/iob_system_linux/iob_system_linux.py
             #
-            # "system_attributes": {
-            #     # Every attribute in this dictionary will override/append to the ones of the iob_system_linux parent core.
-            #     "board_list": [
-            #         "iob_aes_ku040_db_g",
-            #         "iob_cyclonev_gt_dk",
-            #         "iob_zybo_z7",
-            #     ],
-            #     "ports": [
-            #         {
-            #             # Add new rs232 port for uart
-            #             "name": "rs232_m",
-            #             "descr": "iob-system uart interface",
-            #             "signals": {
-            #                 "type": "rs232",
-            #             },
-            #         },
-            #         # NOTE: Add other ports here.
-            #     ],
-            #     "subblocks": [
-            #         {
-            #             # Instantiate a UART16550 core from: https://github.com/IObundle/iob-uart16550
-            #             "core_name": "iob_uart16550",
-            #             "instance_name": "UART0",  # Use same name as one inherited from iob_system to replace it
-            #             "instance_description": "UART peripheral",
-            #             "is_peripheral": True,
-            #             "parameters": {},
-            #             "connect": {
-            #                 "clk_en_rst_s": "clk_en_rst_s",
-            #                 # Cbus connected automatically
-            #                 "rs232_m": "rs232_m",
-            #                 "interrupt_o": "uart_interrupt",
-            #             },
-            #         },
-            #         # NOTE: Add other components/peripherals here.
+            # Select CPU to use. For a list of compatible CPUs and info about custom CPU integration
+            # check the 'cpu' python parameter at: https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/lib/iob_system/iob_system.py
+            "cpu": "iob_vexriscv",
+            #
+            # NOTE: Place other iob_system_linux python parameters here
+            # "some_iob_system_linux_param": "my_value",
+            **py_params,
+        },
+        # Every attribute in this dictionary will override/append to the ones of the iob_system_linux parent core.
+        "board_list": [
+            "iob_aes_ku040_db_g",
+            "iob_cyclonev_gt_dk",
+            "iob_zybo_z7",
+        ],
+        "ports": [
+            {
+                # Override rs232 port of uart (inherited from iob_system_linux)
+                "name": "rs232_m",
+                "descr": "soc_linux uart interface",
+                "signals": {
+                    "type": "rs232",
+                },
+            },
+            # NOTE: Add other ports here.
+            # {
+            #     "name": "my_custom_interface_io",
+            #     "descr": "Custom SoCLinux interface",
+            #     "signals": [
+            #         {"name": "my_input_port_i", "width": 32},
+            #         {"name": "my_output_port_o", "width": 32},
             #     ],
             # },
-            **py_params_dict,
-        },
+        ],
+        # NOTE: Add other component overrides here.
     }
 
-    return core_dict
+    return attributes_dict
