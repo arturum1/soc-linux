@@ -22,7 +22,7 @@ def setup(py_params: dict):
             # "some_iob_system_linux_param": "my_value",
             **py_params,
         },
-        # Every attribute in this dictionary will override/append to the ones of the iob_system_linux parent core.
+        # Every attribute in this dictionary will override/append to the ones of the iob_system_linux parent core
         "board_list": [
             "iob_aes_ku040_db_g",
             "iob_cyclonev_gt_dk",
