@@ -18,6 +18,9 @@ def setup(py_params: dict):
             # check the 'cpu' python parameter at: https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/lib/iob_system/iob_system.py
             "cpu": "iob_vexriscv",
             #
+            # Do not include Tester system to speed-up setup process
+            "include_tester": False,
+            #
             # NOTE: Place other iob_system_linux python parameters here
             # "some_iob_system_linux_param": "my_value",
             **py_params,
