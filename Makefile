@@ -137,3 +137,6 @@ release-artifacts:
 	tar -czf $(CORE)_V$(VERSION)_INTMEM0_EXTMEM1_INITMEM0.tar.gz ../$(CORE)_V$(VERSION)
 
 .PHONY: release-artifacts
+
+SOC_LINUX_BUILD_DIR:=$(BUILD_DIR)
+include linux_targets.mk
