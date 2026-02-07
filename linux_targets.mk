@@ -74,19 +74,18 @@ endif
 	for file in "$(CORE)_user_sysfs" "$(CORE)_user_dev" "$(CORE)_user_ioctl" "$(CORE)_tests_sysfs" "$(CORE)_tests_dev" "$(CORE)_tests_ioctl"; do\
 		echo "rz -o /root" > $(BOARD_SERIAL_PORT) && sz -y user/$$file < $(BOARD_SERIAL_PORT) > $(BOARD_SERIAL_PORT);\
 	done; `\
-	echo "modprobe /drivers/$(CORE).ko" > $(BOARD_SERIAL_PORT) $(SSH_END)
+	echo "rmmod $(CORE); insmod /drivers/$(CORE).ko" > $(BOARD_SERIAL_PORT) $(SSH_END)
 
 .PHONY: kernel-module-rebuild
 
 # Set TERM variable to linux-c-nc (needed to run in non-interactive mode https://stackoverflow.com/a/49077622)
 TERM_STR:=TERM=linux-c-nc
-# Set HOME to current (fpga) directory (needed because minicom always reads the '.minirc.*' config file from HOME)
-HOME_STR:=HOME=$(REMOTE_BUILD_DIR)/hardware/fpga
 SCRIPT_STR:=-S minicom_linux_script.txt
 # Set a capture file and print its contents (to work around minicom clearing the screen)
 LOG_STR:=-C minicom_out.log $(FAKE_STDOUT) || cat minicom_out.log
 rerun-tests:
+	# Set HOME to current (fpga) directory (needed because minicom always reads the '.minirc.*' config file from HOME)
 	$(SSH_START) cd $(REMOTE_BUILD_DIR)/hardware/fpga;\
-	$(HOME_STR) $(TERM_STR) minicom iobundle.dfl $(SCRIPT_STR) $(LOG_STR) $(SSH_END)
+	HOME=$$PWD $(TERM_STR) minicom iobundle.dfl $(SCRIPT_STR) $(LOG_STR) $(SSH_END)
 
 .PHONY: rerun-tests
