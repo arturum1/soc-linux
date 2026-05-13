@@ -18,6 +18,8 @@ USE_EXTMEM ?= 1
 
 INIT_MEM ?= 1
 
+CACHE_DEMO ?= 0
+
 VERSION ?=$(shell cat $(CORE).py | grep version | cut -d '"' -f 4)
 
 ifneq ($(DEBUG),)
@@ -39,6 +41,9 @@ PY_PARAMS:=$(PY_PARAMS):use_ethernet=$(USE_ETHERNET)
 endif
 ifneq ($(CPU),)
 PY_PARAMS:=$(PY_PARAMS):cpu=$(CPU)
+endif
+ifneq ($(CACHE_DEMO),)
+PY_PARAMS:=$(PY_PARAMS):cache_demo=$(CACHE_DEMO)
 endif
 # Remove first char (:) from PY_PARAMS
 PY_PARAMS:=$(shell echo $(PY_PARAMS) | cut -c2-)
