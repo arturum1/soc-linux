@@ -9,6 +9,10 @@ ROOT_DIR ?=..
 
 include $(ROOT_DIR)/software/auto_sw_build.mk
 
+# Filter out iob_cache from PERIPHERALS list, since its correct generated name is iob_cache_axi
+PERIPHERALS:=$(filter-out iob_cache,$(PERIPHERALS))
+PERIPHERALS+=iob_cache_axi
+
 # Local embedded makefile settings for custom bootloader and firmware targets.
 
 # Bootloader flow options:
@@ -228,9 +232,6 @@ SOC_LINUX_FW_SRC+=$(foreach file,$(DRIVERS),$(wildcard $(file)*))
 SOC_LINUX_FW_SRC+=$(addprefix src/,$(addsuffix _csrs.c,$(PERIPHERALS)))
 # Filter out iob_uart16550_csrs.c since it has no csrs
 SOC_LINUX_FW_SRC:=$(filter-out src/iob_uart16550_csrs.c,$(SOC_LINUX_FW_SRC))
-# Filter out iob_cache_csrs.c since correct name is iob_cache_axi_csrs.c
-SOC_LINUX_FW_SRC:=$(filter-out src/iob_cache_csrs.c,$(SOC_LINUX_FW_SRC))
-SOC_LINUX_FW_SRC+=src/iob_cache_axi_csrs.c
 
 # BOOTLOADER SOURCES
 SOC_LINUX_BOOT_SRC+=src/soc_linux_boot.S

@@ -1,0 +1,77 @@
+# Script for "runscript" program of minicom, to test iob_cache (with DMA loopback) in linux
+
+# Set 15min timeout
+# runscript has 2min timeout by default:
+# check `timeout` in: https://linux.die.net/man/1/runscript
+timeout 900
+
+# Wait for the "buildroot login:" message
+# Or jump straight to shell if we are already logged in
+print "\n[minicom] Waiting for buildroot login..."
+send ""
+expect {
+    "buildroot login:"
+    "\n#" goto post_login
+    timeout 300 goto on_timeout
+}
+
+print "\n[minicom] Detected login prompt. Logging in..."
+
+send "root"
+
+expect {
+    "#"
+    timeout 20 goto on_timeout
+}
+
+post_login:
+
+#
+# Run tests
+#
+
+print "\n[minicom] Logged in. Running tests..."
+
+# Load DMA and Cache drivers (unloading first it if it has already been loaded before)
+send "rmmod iob_cache_axi 2>/dev/null; insmod /drivers/iob_cache_axi.ko"
+expect {
+    "#"
+    timeout 10 goto on_timeout
+}
+
+send "rmmod iob_dma 2>/dev/null; insmod /drivers/iob_dma.ko"
+expect {
+    "#"
+    timeout 10 goto on_timeout
+}
+
+print "\n[minicom] Test iob_cache with iob_dma in loopback"
+send "./iob_cache_dma_test"
+expect {
+    "#"
+    timeout 20 goto on_timeout
+}
+
+#
+# Tests complete
+#
+
+# Send test.log
+send "echo 'Test passed!' > test.log"
+send "sz -e test.log"
+! rz --overwrite
+
+print "\n[minicom] Done Test"
+
+# Exit minicom
+! kill `cut -f4 -d' ' /proc/$PPID/stat`
+
+
+# Jump here when timeout is triggered
+on_timeout:
+
+print "\n[minicom] Timeout reached. Exiting..."
+
+# Exit minicom
+! kill `cut -f4 -d' ' /proc/$PPID/stat`
+

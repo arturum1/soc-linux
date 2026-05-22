@@ -418,7 +418,7 @@ void test_cache_dma_loopback() {
 
   // DMA read: src -> AXI stream out (through cache)
   printf("DMA read from src (via cache) at %p...\n", src_data);
-  dma_read_transfer(src_data, 4);
+  dma_read_transfer((uint32_t)(uintptr_t)src_data, 4);
   while (dma_read_busy())
     ;
 
@@ -428,7 +428,7 @@ void test_cache_dma_loopback() {
 
   // DMA write: AXI stream in -> dst (through cache)
   printf("DMA write to dst (via cache) at %p...\n", dst_data);
-  dma_write_transfer(dst_data, 4);
+  dma_write_transfer((uint32_t)(uintptr_t)dst_data, 4);
   while (dma_write_busy())
     ;
 
@@ -469,56 +469,60 @@ void test_cache_counters() {
   printf("\n--- Cache Counter Test ---\n");
 
   uint32_t test_buf[4] = {0xA5A5A5A5, 0x5A5A5A5A, 0x12345678, 0x87654321};
-  clear_cache(); // Ensure test_buf is in memory
+  clear_cache();
 
-  // Test 1: DMA read from cold cache (expect READ_MISS)
+  // Test 1: Cold DMA read
   printf("Test 1: DMA read (cold)...\n");
   iob_cache_axi_csrs_set_RST_CNTRS(1);
   iob_cache_axi_csrs_set_RST_CNTRS(0);
   iob_cache_axi_csrs_set_INVALIDATE(1);
   iob_cache_axi_csrs_set_INVALIDATE(0);
-
-  dma_read_transfer(test_buf, 1); // Read 1 word through cache
+  dma_read_transfer((uint32_t)(uintptr_t)test_buf, 1);
   while (dma_read_busy())
     ;
-  printf("  MISS=%u, HIT=%u\n", iob_cache_axi_csrs_get_READ_MISS(),
+  printf("  READ_MISS=%u READ_HIT=%u\n", iob_cache_axi_csrs_get_READ_MISS(),
          iob_cache_axi_csrs_get_READ_HIT());
 
-  // Test 2: DMA read from warm cache (expect READ_HIT)
+  // Test 2: Warm DMA read (same address)
   printf("Test 2: DMA read (warm)...\n");
-  dma_read_transfer(test_buf, 1); // Same address, should hit
+  dma_read_transfer((uint32_t)(uintptr_t)test_buf, 1);
   while (dma_read_busy())
     ;
-  printf("  MISS=%u, HIT=%u\n", iob_cache_axi_csrs_get_READ_MISS(),
+  printf("  READ_MISS=%u READ_HIT=%u\n", iob_cache_axi_csrs_get_READ_MISS(),
          iob_cache_axi_csrs_get_READ_HIT());
 
-  // Test 3: DMA write (expect WRITE_MISS or HIT)
-  printf("Test 3: DMA write...\n");
-  iob_cache_axi_csrs_set_RST_CNTRS(1);
-  iob_cache_axi_csrs_set_RST_CNTRS(0);
-  dma_write_transfer(&test_buf[1], 1);
+  // Test 3: Warm DMA write (same line cached from test 1-2)
+  printf("Test 3: DMA write (warm)...\n");
+  dma_write_transfer((uint32_t)(uintptr_t)&test_buf[1], 1);
   while (dma_write_busy())
     ;
-  printf("  WRITE_MISS=%u, WRITE_HIT=%u\n", iob_cache_axi_csrs_get_WRITE_MISS(),
+  printf("  WRITE_MISS=%u WRITE_HIT=%u\n", iob_cache_axi_csrs_get_WRITE_MISS(),
          iob_cache_axi_csrs_get_WRITE_HIT());
 
-  // Test 4: Invalidate + DMA read (expect READ_MISS)
-  printf("Test 4: Invalidate + DMA read...\n");
-  iob_cache_axi_csrs_set_RST_CNTRS(1);
-  iob_cache_axi_csrs_set_RST_CNTRS(0);
+  // Test 4: Cold DMA write with WTB probe
+  printf("Test 4: DMA write (cold)...\n");
   iob_cache_axi_csrs_set_INVALIDATE(1);
   iob_cache_axi_csrs_set_INVALIDATE(0);
-  dma_read_transfer(test_buf, 1);
-  while (dma_read_busy())
+  dma_write_transfer((uint32_t)(uintptr_t)&test_buf[1], 1);
+  printf("  (during write) WTB_EMPTY=%u WTB_FULL=%u\n",
+         iob_cache_axi_csrs_get_WTB_EMPTY(),
+         iob_cache_axi_csrs_get_WTB_FULL());
+  while (dma_write_busy())
     ;
-  printf("  MISS=%u, HIT=%u\n", iob_cache_axi_csrs_get_READ_MISS(),
-         iob_cache_axi_csrs_get_READ_HIT());
+  printf("  WRITE_MISS=%u WRITE_HIT=%u\n", iob_cache_axi_csrs_get_WRITE_MISS(),
+         iob_cache_axi_csrs_get_WRITE_HIT());
 
-  // Test 5: WTB status and Version
-  printf("Test 5: WTB_EMPTY=%u, WTB_FULL=%u\n",
-         iob_cache_axi_csrs_get_WTB_EMPTY(), iob_cache_axi_csrs_get_WTB_FULL());
-  printf("Test 6: Version=0x%06x\n", iob_cache_axi_csrs_get_version());
-
+  // Test 5: Status registers
+  printf("Test 5: Status registers...\n");
+  printf("  WTB_EMPTY=%u WTB_FULL=%u\n", iob_cache_axi_csrs_get_WTB_EMPTY(),
+         iob_cache_axi_csrs_get_WTB_FULL());
+  printf("  RW_HIT=%u RW_MISS=%u\n", iob_cache_axi_csrs_get_RW_HIT(),
+         iob_cache_axi_csrs_get_RW_MISS());
+  printf("  READ_HIT=%u READ_MISS=%u\n", iob_cache_axi_csrs_get_READ_HIT(),
+         iob_cache_axi_csrs_get_READ_MISS());
+  printf("  WRITE_HIT=%u WRITE_MISS=%u\n", iob_cache_axi_csrs_get_WRITE_HIT(),
+         iob_cache_axi_csrs_get_WRITE_MISS());
+  printf("  Version=0x%06x\n", iob_cache_axi_csrs_get_version());
   printf("Cache counter test complete.\n");
 }
 #endif // SOC_LINUX_CACHE_DEMO
