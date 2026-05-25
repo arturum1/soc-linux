@@ -86,8 +86,8 @@ FIRM_ARGS += $(LINUX_DIR) $(LINUX_ADDR)
 FIRM_ARGS += $(ROOTFS_DIR) $(ROOTFS_ADDR)
 UTARGETS += compile_device_tree compile_opensbi
 FIRMWARE := fw_jump.bin soc_linux.dtb Image rootfs.cpio.gz
-# Set simulation/FPGA board grab timeout to 1 hour
-GRAB_TIMEOUT ?= 3600
+# Set simulation/FPGA board grab timeout to 5 minutes
+GRAB_TIMEOUT ?= 300
 else
 FIRM_ARGS = $<
 UTARGETS += soc_linux_firmware 

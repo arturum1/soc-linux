@@ -505,8 +505,7 @@ void test_cache_counters() {
   iob_cache_axi_csrs_set_INVALIDATE(0);
   dma_write_transfer((uint32_t)(uintptr_t)&test_buf[1], 1);
   printf("  (during write) WTB_EMPTY=%u WTB_FULL=%u\n",
-         iob_cache_axi_csrs_get_WTB_EMPTY(),
-         iob_cache_axi_csrs_get_WTB_FULL());
+         iob_cache_axi_csrs_get_WTB_EMPTY(), iob_cache_axi_csrs_get_WTB_FULL());
   while (dma_write_busy())
     ;
   printf("  WRITE_MISS=%u WRITE_HIT=%u\n", iob_cache_axi_csrs_get_WRITE_MISS(),

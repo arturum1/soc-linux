@@ -110,12 +110,10 @@ static int dma_write_with_timeout(uint32_t phys_addr, uint32_t nwords) {
 int test_cache_dma_loopback(void) {
   printf("\n--- Cache DMA Loopback Test ---\n");
 
-  void *src_buf =
-      mmap(NULL, BUF_SIZE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS,
-           -1, 0);
-  void *dst_buf =
-      mmap(NULL, BUF_SIZE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS,
-           -1, 0);
+  void *src_buf = mmap(NULL, BUF_SIZE, PROT_READ | PROT_WRITE,
+                       MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+  void *dst_buf = mmap(NULL, BUF_SIZE, PROT_READ | PROT_WRITE,
+                       MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 
   if (src_buf == MAP_FAILED || dst_buf == MAP_FAILED) {
     perror("mmap");
@@ -187,9 +185,8 @@ int test_cache_dma_loopback(void) {
 int test_cache_counters_via_dma(void) {
   printf("\n--- Cache Counter Test ---\n");
 
-  void *buf =
-      mmap(NULL, BUF_SIZE, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS,
-           -1, 0);
+  void *buf = mmap(NULL, BUF_SIZE, PROT_READ | PROT_WRITE,
+                   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
   if (buf == MAP_FAILED) {
     perror("mmap");
     return TEST_FAILED;
@@ -225,8 +222,7 @@ int test_cache_counters_via_dma(void) {
   printf("Test 3: DMA write (warm)...\n");
   if (dma_write_with_timeout(buf_pa + 4, 1) != TEST_PASSED)
     return TEST_FAILED;
-  printf("  WRITE_MISS=%u WRITE_HIT=%u\n",
-         iob_cache_axi_csrs_get_WRITE_MISS(),
+  printf("  WRITE_MISS=%u WRITE_HIT=%u\n", iob_cache_axi_csrs_get_WRITE_MISS(),
          iob_cache_axi_csrs_get_WRITE_HIT());
 
   // Test 4: Cold DMA write with WTB probe
@@ -234,14 +230,14 @@ int test_cache_counters_via_dma(void) {
   iob_cache_axi_csrs_set_INVALIDATE(1);
   iob_cache_axi_csrs_set_INVALIDATE(0);
   dma_write_transfer(buf_pa + 4, 1);
-  // Under linux, (unlike in baremetal) this print is not fast enough to catch a non empty WTB. The write has already finished, and the buffer is empty.
-  //printf("  (during write) WTB_EMPTY=%u WTB_FULL=%u\n",
+  // Under linux, (unlike in baremetal) this print is not fast enough to catch a
+  // non empty WTB. The write has already finished, and the buffer is empty.
+  // printf("  (during write) WTB_EMPTY=%u WTB_FULL=%u\n",
   //       iob_cache_axi_csrs_get_WTB_EMPTY(),
   //       iob_cache_axi_csrs_get_WTB_FULL());
   while (dma_write_busy())
     ;
-  printf("  WRITE_MISS=%u WRITE_HIT=%u\n",
-         iob_cache_axi_csrs_get_WRITE_MISS(),
+  printf("  WRITE_MISS=%u WRITE_HIT=%u\n", iob_cache_axi_csrs_get_WRITE_MISS(),
          iob_cache_axi_csrs_get_WRITE_HIT());
 
   // Test 5: Status registers
