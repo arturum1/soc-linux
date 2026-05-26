@@ -32,7 +32,9 @@ endif
 BOARD_DIR := $(shell find $(SOC_LINUX_BUILD_DIR)/hardware/fpga -name $(BOARD) -type d -print -quit)
 # Include board.mk to set BOARD_USER, BOARD_SERVER, and BOARD_SERIAL_PORT
 ifneq ($(BOARD_DIR),)
+ifneq ($(wildcard $(BOARD_DIR)/board.mk),)
 include $(BOARD_DIR)/board.mk
+endif
 endif
 # Configure ssh if running on remote machines
 ifneq ($(BOARD_SERVER),)
