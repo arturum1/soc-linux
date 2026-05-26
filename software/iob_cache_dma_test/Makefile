@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 CC = riscv64-unknown-linux-gnu-gcc
 FLAGS = -Wall -Werror -O2 -static -march=rv32imac -mabi=ilp32
 FLAGS += -I../../../src -I../../drivers -DDEV_IF
