@@ -5,7 +5,7 @@
 
 def setup(py_params: dict):
     # Include CACHE and DMA peripherals for demonstration
-    CACHE_DEMO = py_params.get("cache_demo", 0)
+    CACHE_DEMO = int(py_params.get("cache_demo", 0))
 
     # Attributes to pass to parent SoC (iob_system_linux), overriding inherited defaults.
     override_attributes = {}

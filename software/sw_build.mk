@@ -9,9 +9,11 @@ ROOT_DIR ?=..
 
 include $(ROOT_DIR)/software/auto_sw_build.mk
 
+ifneq ($(filter iob_cache,$(PERIPHERALS)),)
 # Filter out iob_cache from PERIPHERALS list, since its correct generated name is iob_cache_axi
 PERIPHERALS:=$(filter-out iob_cache,$(PERIPHERALS))
 PERIPHERALS+=iob_cache_axi
+endif
 
 # Local embedded makefile settings for custom bootloader and firmware targets.
 

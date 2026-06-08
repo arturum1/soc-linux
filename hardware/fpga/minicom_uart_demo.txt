@@ -1,0 +1,69 @@
+# SPDX-FileCopyrightText: 2026 IObundle
+#
+# SPDX-License-Identifier: MIT
+
+# Script for "runscript" program of minicom, to test two iob_uart16550 instances in linux
+
+# Set 15min timeout
+# runscript has 2min timeout by default:
+# check `timeout` in: https://linux.die.net/man/1/runscript
+timeout 900
+
+# Wait for the "buildroot login:" message
+# Or jump straight to shell if we are already logged in
+print "\n[minicom] Waiting for buildroot login..."
+send ""
+expect {
+    "buildroot login:"
+    "\n#" goto post_login
+    timeout 300 goto on_timeout
+}
+
+print "\n[minicom] Detected login prompt. Logging in..."
+
+send "root"
+
+expect {
+    "#"
+    timeout 20 goto on_timeout
+}
+
+post_login:
+
+#
+# Run tests
+#
+
+print "\n[minicom] Logged in. Running tests..."
+
+print "\n[minicom] Test communication between two iob_uart16550 periherals using '8250/16550' Linux driver"
+send "./uart16550/validate_uart.sh"
+expect {
+    "#"
+    timeout 30 goto on_timeout
+}
+
+#
+# Tests complete
+#
+
+# Send test.log
+send "echo 'Test passed!' > test.log"
+send "sz -e test.log"
+! rz --overwrite
+
+print "\n[minicom] Done Test"
+
+# Exit minicom
+! kill `cut -f4 -d' ' /proc/$PPID/stat`
+
+
+# Jump here when timeout is triggered
+on_timeout:
+
+print "\n[minicom] Timeout reached. Exiting..."
+
+# Exit minicom
+! kill `cut -f4 -d' ' /proc/$PPID/stat`
+
+
