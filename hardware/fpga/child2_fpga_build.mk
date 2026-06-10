@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 IObundle
+# SPDX-FileCopyrightText: 2026 IObundle
 #
 # SPDX-License-Identifier: MIT
 
@@ -10,6 +10,14 @@ UFLAGS+=CACHE_DEMO=$(CACHE_DEMO)
 ifeq ($(CACHE_DEMO),1)
 # Override default linux minicom script to run cache demo instead
 MINICOM_SCRIPT=minicom_cache_demo.txt
+endif
+
+# Pass UART_DEMO flag to remote systems
+UFLAGS+=UART_DEMO=$(UART_DEMO)
+
+ifeq ($(UART_DEMO),1)
+# Override default linux minicom script to run cache demo instead
+MINICOM_SCRIPT=minicom_uart_demo.txt
 endif
 
 # include fpga build segment of (level 3) child systems
