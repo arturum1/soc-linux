@@ -24,7 +24,7 @@ endif
 UFLAGS+=ETH_DEMO=$(ETH_DEMO)
 
 ifeq ($(ETH_DEMO),1)
-GRAB_TIMEOUT= 1300
+GRAB_TIMEOUT= 1500
 MINICOM_SCRIPT=minicom_eth_demo.txt
 CONSOLE_CMD += && ( cd ../../software/tests/iob_eth && ./validate_eth.sh -S root -p root -s 192.168.74.2 -i $(ETH_IF) )
 # # Override CONSOLE_CMD: skip minicom (appended by child_fpga_build.mk) and run eth test instead
