@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 IObundle
+#
+# SPDX-License-Identifier: MIT
+
 # Script for "runscript" program of minicom, to test iob_cache (with DMA loopback) in linux
 
 # Set 15min timeout
@@ -16,6 +20,13 @@ expect {
 }
 
 print "\n[minicom] Detected login prompt. Logging in..."
+
+send "root"
+
+expect {
+    "Password:"
+    timeout 20 goto on_timeout
+}
 
 send "root"
 

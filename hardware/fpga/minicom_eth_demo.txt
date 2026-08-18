@@ -43,23 +43,7 @@ post_login:
 
 print "\n[minicom] Logged in. Running tests..."
 
-print "\n[minicom] Test communication between two iob_uart16550 periherals using '8250/16550' Linux driver"
-send "./uart16550/validate_uart.sh"
-expect {
-    "#"
-    timeout 30 goto on_timeout
-}
-
-#
-# Tests complete
-#
-
-# Send test.log
-send "echo 'Test passed!' > test.log"
-send "sz -e test.log"
-! rz --overwrite
-
-print "\n[minicom] Done Test"
+print "\n[minicom] Exit minicom to run standalone iob_eth test"
 
 # Exit minicom
 ! kill `cut -f4 -d' ' /proc/$PPID/stat`

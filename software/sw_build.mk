@@ -244,9 +244,9 @@ ifeq ($(USE_ETHERNET),1)
 SOC_LINUX_BOOT_SRC+=src/iob_eth.c
 SOC_LINUX_BOOT_SRC+=src/iob_eth_csrs.c
 endif
-SOC_LINUX_BOOT_SRC+=src/iob_spi.c
-SOC_LINUX_BOOT_SRC+=src/iob_spiplatform.c
-SOC_LINUX_BOOT_SRC+=src/iob_spi_master_csrs.c
+# SOC_LINUX_BOOT_SRC+=src/iob_spi.c
+# SOC_LINUX_BOOT_SRC+=src/iob_spiplatform.c
+# SOC_LINUX_BOOT_SRC+=src/iob_spi_master_csrs.c
 SOC_LINUX_BOOT_SRC+=src/iob_printf.c
 
 
