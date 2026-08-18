@@ -7,7 +7,7 @@
 # Set 15min timeout
 # runscript has 2min timeout by default:
 # check `timeout` in: https://linux.die.net/man/1/runscript
-timeout 1200
+timeout 900
 
 # Wait for the "buildroot login:" message
 # Or jump straight to shell if we are already logged in
@@ -43,21 +43,7 @@ post_login:
 
 print "\n[minicom] Logged in. Running tests..."
 
-send "ethtool -s "eth0" speed 100 duplex full autoneg off"
-
-expect {
-    "#"
-    timeout 20 goto on_timeout
-}
-
-print "\n[minicom] Launch ssh to load required dependency modules (randomness)"
-send "ssh -V"
-expect {
-    "#"
-    timeout 900 goto on_timeout
-}
-
-print "\n[minicom] Exit minicom to run standalone eth test"
+print "\n[minicom] Exit minicom to run standalone iob_eth test"
 
 # Exit minicom
 ! kill `cut -f4 -d' ' /proc/$PPID/stat`

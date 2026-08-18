@@ -130,7 +130,7 @@ int main() {
   printf_init(&uart16550_putc);
 #ifdef SOC_LINUX_USE_ETHERNET
   // init eth
-  eth_init(ETH0_BASE, &clear_cache);
+  eth_init(ETH0_BASE, IOB_BSP_FREQ, &clear_cache, &printf_);
   eth_wait_phy_rst();
 #endif // SOC_LINUX_USE_ETHERNET
 
