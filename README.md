@@ -12,6 +12,8 @@ By providing a Linux IP core testbed, SoCLinux enables developers to build and t
 The project aims to establish a widely adopted and maintainable ecosystem for IP core development, benefiting the broader community of IP core providers and users.
 SoCLinux will leverage the IP-XACT standard (IEEE 1685) for IP core packaging, and seamlessly exchange IP cores with FuseSoC, a well-known open-source IP core package manager.
 
+An AI generated wiki for SoCLinux is available [here](https://deepwiki.com/IObundle/soc-linux)
+
 ## SoCLinux template
 
 The SoCLinux template available in this repository is a derivative system of the [IOb-System-Linux](https://github.com/IObundle/py2hwsw/tree/main/py2hwsw/lib/iob_system/iob_system_linux) SoC located in the [Py2HWSW](https://github.com/IObundle/py2hwsw) framework's core library.
