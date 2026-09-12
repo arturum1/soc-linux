@@ -50,12 +50,32 @@ static volatile uint64_t timestamp = 0;
 void test_cache_dma_loopback();
 void test_cache_counters();
 
-void clear_cache() {
+// Assumes 64-byte cache lines (common in VexiiRiscv/VexRiscv); adjust if
+// different
+#define CACHE_LINE_SIZE 64
+
+// Clean and invalidate CPU data cache. Write-back dirty lines to memory and
+// then discard cache contents.
+void flush_cache(void *start, size_t len) {
+#ifdef SOC_LINUX_CBO
+  char *end = (char *)start + len;
+  char *ptr;
+
+  // Round start down to line boundary
+  ptr = (char *)((uintptr_t)start & ~(CACHE_LINE_SIZE - 1));
+
+  // Flush (clean + invalidate) whole lines covering the range
+  while (ptr < end) {
+    asm volatile("cbo.flush 0(%0)" ::"r"(ptr) : "memory");
+    ptr += CACHE_LINE_SIZE;
+  }
+#else  // NOT SOC_LINUX_CBO
   // Delay to ensure all data is written to memory
   for (unsigned int i = 0; i < 10; i++)
     asm volatile("nop");
   // Flush VexRiscv CPU internal cache
   asm volatile(".word 0x500F" ::: "memory");
+#endif // SOC_LINUX_CBO
 }
 
 #ifdef SOC_LINUX_USE_ETHERNET
@@ -130,7 +150,7 @@ int main() {
   printf_init(&uart16550_putc);
 #ifdef SOC_LINUX_USE_ETHERNET
   // init eth
-  eth_init(ETH0_BASE, IOB_BSP_FREQ, &clear_cache, &printf_);
+  eth_init(ETH0_BASE, IOB_BSP_FREQ, &flush_cache, &printf_);
   eth_wait_phy_rst();
 #endif // SOC_LINUX_USE_ETHERNET
 
@@ -421,7 +441,7 @@ void test_cache_dma_loopback() {
          src_data[3]);
 
   // Flush CPU cache to write src_data to memory
-  clear_cache();
+  flush_cache();
 
   // DMA read: src -> AXI stream out (through cache)
   printf("DMA read from src (via cache) at %p...\n", src_data);
@@ -439,7 +459,7 @@ void test_cache_dma_loopback() {
   while (dma_write_busy())
     ;
 
-  clear_cache();
+  flush_cache();
 
   // printf("Flushing iob_cache\n");
   // We should flush cache so that it write's (back) data to memory. However,
@@ -476,7 +496,7 @@ void test_cache_counters() {
   printf("\n--- Cache Counter Test ---\n");
 
   uint32_t test_buf[4] = {0xA5A5A5A5, 0x5A5A5A5A, 0x12345678, 0x87654321};
-  clear_cache();
+  flush_cache();
 
   // Test 1: Cold DMA read
   printf("Test 1: DMA read (cold)...\n");
