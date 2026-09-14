@@ -22,7 +22,7 @@ def setup(py_params: dict):
             #
             # Select CPU to use. For a list of compatible CPUs and info about custom CPU integration
             # check the 'cpu' python parameter at: https://github.com/IObundle/py2hwsw/blob/main/py2hwsw/lib/iob_system/iob_system.py
-            "cpu": "iob_vexiiriscv",
+            "cpu": "iob_vexriscv",
             #
             # Do not include Tester system to speed-up setup process
             "include_tester": False,
