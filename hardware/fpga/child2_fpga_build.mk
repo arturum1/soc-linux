@@ -27,9 +27,6 @@ ifeq ($(ETH_DEMO),1)
 GRAB_TIMEOUT= 1500
 MINICOM_SCRIPT=minicom_eth_demo.txt
 CONSOLE_CMD += && ( cd ../../software/tests/iob_eth && ./validate_eth.sh -S root -p root -s 192.168.74.2 -i $(ETH_IF) )
-# # Override CONSOLE_CMD: skip minicom (appended by child_fpga_build.mk) and run eth test instead
-# # Use = (deferred expansion) to preserve variable references for later expansion
-# CONSOLE_CMD = $(IOB_CONSOLE_PYTHON_ENV) $(PYTHON_DIR)/console_ethernet.py -s $(BOARD_SERIAL_PORT) -c $(PYTHON_DIR)/console.py -m "$(RMAC_ADDR)" -i "$(ETH_IF)" && ( cd ../../software/tests/iob_eth && ./validate_eth.sh -S root -p root -s 192.168.74.2 -i $(ETH_IF) )
 endif
 
 # Pass CPU_DEMO flag to remote systems
@@ -39,6 +36,15 @@ ifeq ($(CPU_DEMO),1)
 # Override default linux minicom script
 MINICOM_SCRIPT=minicom_cpu_demo.txt
 endif
+
+# Pass VIDEO_DEMO flag to remote systems
+UFLAGS+=VIDEO_DEMO=$(VIDEO_DEMO)
+
+ifeq ($(VIDEO_DEMO),1)
+MINICOM_SCRIPT=minicom_video_demo.txt
+CONSOLE_CMD += && ( ./video_demo.sh )
+endif
+
 
 # include fpga build segment of (level 3) child systems
 # child systems can add their own child3_fpga_build.mk without having to override this one.
