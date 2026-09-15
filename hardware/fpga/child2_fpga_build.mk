@@ -8,7 +8,7 @@
 UFLAGS+=CACHE_DEMO=$(CACHE_DEMO)
 
 ifeq ($(CACHE_DEMO),1)
-# Override default linux minicom script to run cache demo instead
+# Override default linux minicom script
 MINICOM_SCRIPT=minicom_cache_demo.txt
 endif
 
@@ -16,7 +16,7 @@ endif
 UFLAGS+=UART_DEMO=$(UART_DEMO)
 
 ifeq ($(UART_DEMO),1)
-# Override default linux minicom script to run cache demo instead
+# Override default linux minicom script
 MINICOM_SCRIPT=minicom_uart_demo.txt
 endif
 
@@ -29,11 +29,18 @@ MINICOM_SCRIPT=minicom_eth_demo.txt
 CONSOLE_CMD += && ( cd ../../software/tests/iob_eth && ./validate_eth.sh -S root -p root -s 192.168.74.2 -i $(ETH_IF) )
 endif
 
+# Pass CPU_DEMO flag to remote systems
+UFLAGS+=CPU_DEMO=$(CPU_DEMO)
+
+ifeq ($(CPU_DEMO),1)
+# Override default linux minicom script
+MINICOM_SCRIPT=minicom_cpu_demo.txt
+endif
+
 # Pass VIDEO_DEMO flag to remote systems
 UFLAGS+=VIDEO_DEMO=$(VIDEO_DEMO)
 
 ifeq ($(VIDEO_DEMO),1)
-GRAB_TIMEOUT= 1500
 MINICOM_SCRIPT=minicom_video_demo.txt
 CONSOLE_CMD += && ( ./video_demo.sh )
 endif
