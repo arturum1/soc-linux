@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2026 IObundle
 #
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: GPL-3.0-only
 
 CC = riscv64-unknown-linux-gnu-gcc
 FLAGS = -Wall -Werror -O2 -static -march=rv32imac -mabi=ilp32

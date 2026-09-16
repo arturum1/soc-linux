@@ -2,7 +2,7 @@
 
 # SPDX-FileCopyrightText: 2026 IObundle
 #
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: GPL-3.0-only
 
 # Exit immediately if a command exits with a non-zero status
 set -e
